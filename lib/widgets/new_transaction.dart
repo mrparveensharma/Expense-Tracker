@@ -46,8 +46,8 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -80,7 +80,6 @@ class _NewTransactionState extends State<NewTransaction> {
               ),
               controller: _amountController,
               keyboardType: TextInputType.number,
-              onSubmitted: (_) => _submitData(),
             ),
             Container(
               height: 70,
@@ -109,7 +108,6 @@ class _NewTransactionState extends State<NewTransaction> {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
