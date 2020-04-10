@@ -17,15 +17,14 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Quicksand',
         //  errorColor: Colors.red, //By Default it's red
         textTheme: ThemeData.light().textTheme.copyWith(
-              title: TextStyle(
-                fontFamily: 'Quicksand',
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-              ),
-              button: TextStyle(
-                color: Colors.white,
-              )
+            title: TextStyle(
+              fontFamily: 'Quicksand',
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
             ),
+            button: TextStyle(
+              color: Colors.white,
+            )),
         appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
                 title: TextStyle(
@@ -66,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
       datetime: DateTime.now(),
     ),
   ];
+  bool _showChartVal = false;
   List<Transaction> get _recentTransactions {
     return transactions.where((tx) {
       return tx.datetime.isAfter(
@@ -88,13 +88,14 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _deleteTransaction(String id){
-    setState(() => transactions.removeWhere((txn)=> txn.id == id));
+  void _deleteTransaction(String id) {
+    setState(() => transactions.removeWhere((txn) => txn.id == id));
   }
 
   void _startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
       context: ctx,
+      isScrollControlled: true,
       builder: (bctx) {
         return GestureDetector(
           child: NewTransaction(_addNewTransaction),
@@ -107,22 +108,64 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      title: Text("Expense Tracker"),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _startAddNewTransaction(context),
+        ),
+      ],
+    );
+    final _listItemsContainer = Container(
+      height: (MediaQuery.of(context).size.height -
+              appBar.preferredSize.height -
+              MediaQuery.of(context).padding.top) *
+          0.7,
+      child: TransactionList(transactions, _deleteTransaction),
+    );
+    final _isPortrate =
+        MediaQuery.of(context).orientation == Orientation.portrait;
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Expense Tracker"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _startAddNewTransaction(context),
-          ),
-        ],
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_recentTransactions),
-            TransactionList(transactions, _deleteTransaction),
+            if (!_isPortrate)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("Show Chart"),
+                  Switch(
+                    value: _showChartVal,
+                    onChanged: (res) {
+                      setState(() {
+                        _showChartVal = res;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            if (!_isPortrate)
+              _showChartVal == true
+                  ? Container(
+                      height: (MediaQuery.of(context).size.height -
+                              appBar.preferredSize.height -
+                              MediaQuery.of(context).padding.top) *
+                          0.7,
+                      child: Chart(_recentTransactions),
+                    )
+                  : _listItemsContainer,
+            if (_isPortrate)
+              Container(
+                height: (MediaQuery.of(context).size.height -
+                        appBar.preferredSize.height -
+                        MediaQuery.of(context).padding.top) *
+                    0.3,
+                child: Chart(_recentTransactions),
+              ),
+            if (_isPortrate) _listItemsContainer,
           ],
         ),
       ),

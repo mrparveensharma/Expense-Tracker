@@ -15,7 +15,7 @@ class _NewTransactionState extends State<NewTransaction> {
   DateTime _selectedDate;
 
   void _submitData() {
-    if(_amountController.text.isEmpty){
+    if (_amountController.text.isEmpty) {
       return;
     }
     final titleInput = _titleController.text;
@@ -23,8 +23,8 @@ class _NewTransactionState extends State<NewTransaction> {
     if (titleInput.isEmpty || amountInput <= 0 || _selectedDate == null) {
       return;
     }
-    widget.addTransaction(
-        titleInput, double.parse(amountInput.toStringAsFixed(2)), _selectedDate);
+    widget.addTransaction(titleInput,
+        double.parse(amountInput.toStringAsFixed(2)), _selectedDate);
     Navigator.of(context).pop();
   }
 
@@ -46,17 +46,25 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.only(
+          top: 25,
+          left: 15,
+          right: 15,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             TextField(
               decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  borderSide: BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide(color: Theme.of(context).accentColor),
                 ),
                 hintText: 'Title of expense',
                 labelText: 'Title',
@@ -69,10 +77,12 @@ class _NewTransactionState extends State<NewTransaction> {
             ),
             TextField(
               decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  borderSide: BorderSide(color: Colors.blue),
+                  borderSide: BorderSide(color: Theme.of(context).accentColor),
                 ),
                 hintText: 'Amount',
                 labelText: 'Amount',
@@ -108,6 +118,7 @@ class _NewTransactionState extends State<NewTransaction> {
             ),
           ],
         ),
-      );
+      ),
+    );
   }
 }
